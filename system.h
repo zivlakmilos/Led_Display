@@ -18,6 +18,7 @@
 #define RED_DS          PC3
 
 extern unsigned char abeceda[26][5];
+extern unsigned char znakovi[32][8];
 extern unsigned char zvezda[1][8];
 extern unsigned char smajli[1][8];
 
