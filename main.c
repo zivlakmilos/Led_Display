@@ -17,7 +17,7 @@ void timer_pomeranje(void)
 
 int main(void)
 {
-    unsigned char i, j, k;
+    unsigned char i, j, k, n;
     char *str;
     unsigned char status[32];
     char *ptrStatus;
@@ -46,7 +46,7 @@ int main(void)
 
     j = 0;
 
-    str = "PAJA";
+    str = "KO JE OVDE GENIJE";
     k = strlen(str) - 1;
 
     while(1)
@@ -71,17 +71,15 @@ int main(void)
             if(++j > 4)
             {
                 j = 0;
-                if(--k < 0)
+                if(--k <= 0)
                 {
                     k = strlen(str) - 1;
                 }
             }
         }
 
-        shiftKolona(1);
-        for(ptrStatus = status;
-                ptrStatus <= status + 24;
-                ptrStatus += 8)
+        ptrStatus = status;
+        for(n = 0; n < 4; n++)
         {
             for(i = 0; i < 8; i++)
             {
@@ -89,8 +87,8 @@ int main(void)
 
                 if(STATE & START)
                 {
-                    shiftKolona(1);
                     STATE &= ~START;
+                    shiftKolona(1);
                 } else
                 {
                     shiftKolona(0);
@@ -100,6 +98,7 @@ int main(void)
 
                 _delay_us(500);
             }
+            ptrStatus += 8;
         }
     }
 
