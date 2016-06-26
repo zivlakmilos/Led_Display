@@ -4,7 +4,8 @@ CCFLAGS = -mmcu=atmega8
 SRC = \
 	  main.c \
 	  system.c \
-	  uart.c
+	  uart.c \
+	  timer.c
 
 OBJS = $(SRC:.c=.o)
 

@@ -17,19 +17,20 @@
 #define RED_STCP        PC4
 #define RED_DS          PC3
 
-extern unsigned char abeceda[26][5];
-extern unsigned char znakovi[32][8];
-extern unsigned char zvezda[1][8];
-extern unsigned char smajli[1][8];
-
-void shiftRed(unsigned char value);
-void shiftKolona(unsigned char value);
-void setRed(unsigned char value);
+extern char abeceda[26][5];
+extern char znakovi[32][8];
+extern char specijalni_znakovi[2][8];
 
 /*
  * SHCP - shift
  * STCP - klok za ulaz
  * DS - ulaz
  */
+
+void shiftRed(unsigned char value);
+void shiftKolona(unsigned char value);
+void setRed(unsigned char value);
+
+int strlen(char *str);
 
 #endif // _SYSTEM_H_

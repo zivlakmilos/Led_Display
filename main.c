@@ -5,10 +5,22 @@
 
 #include "uart.h"
 
+#define POMERI          0x01
+#define START           0x02
+
+unsigned char STATE = 0x00;
+
+void timer_pomeranje(void)
+{
+    STATE |= POMERI;
+}
+
 int main(void)
 {
-    unsigned char i, j;
+    unsigned char i, j, k;
     char *str;
+    unsigned char status[32];
+    char *ptrStatus;
 
     KOLONA_DDR = 0x00;
     RED_DDR = 0x00;
@@ -23,64 +35,71 @@ int main(void)
     KOLONA_PORT = 0x00;
     RED_PORT = 0x00;
 
-    for(i = 0; i < 8; i++)
-    {
-        shiftRed(0);
-    }
+    TIMER1_register(250, timer_pomeranje);
+
+    setRed(0x00);
     for(i = 0; i < 32; i++)
     {
         shiftKolona(0);
+        status[i] = 0;
     }
 
-    str =",ERA";
+    j = 0;
+
+    str = "PAJA";
+    k = strlen(str) - 1;
 
     while(1)
     {
-        for(i = 0, j = 0; i < 32; i++)
+        STATE |= START;
+
+        if(STATE & POMERI)
         {
-            setRed(0x00);
-            if(i == 0)
-                shiftKolona(1);
-            else
-                shiftKolona(0);
-            if(i < 8)
+            STATE &= ~POMERI;
+            for(i = 31; i > 0; i--)
             {
-                setRed(0xFF);
-                if(str[0] == '.')
-                    setRed(zvezda[0][i]);
-                else
-                    setRed(0xFF);
-                if(str[0] == ',')
-                    setRed(smajli[0][i]);
-                else
-                    setRed(abeceda[str[j] - 'A'][4 - i]);
-                if(i == 4)
-                    j++;
-            } else if(i >= 9 && i < 14)
-            {
-                setRed(0xFF);
-                setRed(abeceda[str[j] - 'A'][4 - i + 9]);
-                if(i == 13)
-                    j++;
-            } else if(i >= 16 && i < 21)
-            {
-                setRed(0xFF);
-                setRed(abeceda[str[j] - 'A'][4 - i + 16]);
-                if(i == 20)
-                    j++;
-            } else if(i >= 24 && i < 29)
-            {
-                setRed(0xFF);
-                setRed(abeceda[str[j] - 'A'][4 - i + 24]);
-                if(i == 27)
-                    j++;
-            } else
-            {
-                setRed(0xFF);
-                setRed(0x00);
+                status[i] = status[i - 1];
             }
 
-            _delay_us(500);
+            if(str[k] == ' ')
+            {
+                status[0] = 0x00;
+            } else
+            {
+                status[0] = abeceda[str[k] - 'A'][4 - j];
+            }
+            if(++j > 4)
+            {
+                j = 0;
+                if(--k < 0)
+                {
+                    k = strlen(str) - 1;
+                }
+            }
+        }
+
+        shiftKolona(1);
+        for(ptrStatus = status;
+                ptrStatus <= status + 24;
+                ptrStatus += 8)
+        {
+            for(i = 0; i < 8; i++)
+            {
+                setRed(0x00);
+
+                if(STATE & START)
+                {
+                    shiftKolona(1);
+                    STATE &= ~START;
+                } else
+                {
+                    shiftKolona(0);
+                }
+
+                setRed(ptrStatus[7 - i]);
+
+                _delay_us(500);
+            }
         }
     }
 
