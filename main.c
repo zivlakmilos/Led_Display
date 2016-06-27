@@ -46,8 +46,8 @@ int main(void)
 
     j = 0;
 
-    str = "KO JE OVDE GENIJE";
-    k = strlen(str) - 1;
+    str = "PAJA    ";
+    k = 0;
 
     while(1)
     {
@@ -56,24 +56,24 @@ int main(void)
         if(STATE & POMERI)
         {
             STATE &= ~POMERI;
-            for(i = 31; i > 0; i--)
+            for(i = 0; i < 31; i++)
             {
-                status[i] = status[i - 1];
+                status[i] = status[i + 1];
             }
 
             if(str[k] == ' ')
             {
-                status[0] = 0x00;
+                status[31] = 0x00;
             } else
             {
-                status[0] = abeceda[str[k] - 'A'][4 - j];
+                status[31] = abeceda[str[k] - 'A'][j];
             }
             if(++j > 4)
             {
                 j = 0;
-                if(--k <= 0)
+                if(++k > strlen(str) - 1)
                 {
-                    k = strlen(str) - 1;
+                    k = 0;
                 }
             }
         }
