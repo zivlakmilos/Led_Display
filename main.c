@@ -35,7 +35,7 @@ int main(void)
     KOLONA_PORT = 0x00;
     RED_PORT = 0x00;
 
-    TIMER1_register(250, timer_pomeranje);
+    TIMER1_register(100, timer_pomeranje);
 
     setRed(0x00);
     for(i = 0; i < 32; i++)
@@ -45,9 +45,9 @@ int main(void)
     }
 
     j = 0;
-
-    str = "PAJA    ";
     k = 0;
+
+    str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789    ";
 
     while(1)
     {
@@ -64,9 +64,15 @@ int main(void)
             if(str[k] == ' ')
             {
                 status[31] = 0x00;
-            } else
+            } else if(str[k] >= 'A' && str[k] <= 'Z')
             {
-                status[31] = abeceda[str[k] - 'A'][j];
+                status[31] = abeceda_velika[str[k] - 'A'][4 - j];
+            } else if(str[k] >= 'a' && str[k] <= 'z')
+            {
+                status[31] = abeceda_mala[str[k] - 'a'][4 - j];
+            } else if(str[k] >= '0' && str[k] <= '9')
+            {
+                status[31] = brojevi[str[k] - '0'][4 - j];
             }
             if(++j > 4)
             {

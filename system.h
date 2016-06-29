@@ -18,6 +18,9 @@
 #define RED_DS          PC3
 
 extern char abeceda[26][5];
+extern char abeceda_velika[26][5];
+extern char abeceda_mala[26][5];
+extern char brojevi[10][5];
 extern char znakovi[32][8];
 extern char specijalni_znakovi[2][8];
 
