@@ -17,7 +17,7 @@ void timer_pomeranje(void)
 
 int main(void)
 {
-    unsigned char i, j, k, n;
+    unsigned char i, j, k;
     char *str;
     unsigned char status[32];
     char *ptrStatus;
@@ -111,8 +111,9 @@ int main(void)
             }
         }
 
-        ptrStatus = status;
-        for(n = 0; n < 4; n++)
+        for(ptrStatus = status;
+                ptrStatus < status + 32;
+                ptrStatus += 8)
         {
             for(i = 0; i < 8; i++)
             {
@@ -131,7 +132,6 @@ int main(void)
 
                 _delay_us(500);
             }
-            ptrStatus += 8;
         }
     }
 
