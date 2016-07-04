@@ -21,6 +21,7 @@ int main(void)
     char *str;
     unsigned char status[32];
     char *ptrStatus;
+    unsigned char max;
 
     KOLONA_DDR = 0x00;
     RED_DDR = 0x00;
@@ -64,17 +65,43 @@ int main(void)
             if(str[k] == ' ')
             {
                 status[31] = 0x00;
+                max = 4;
             } else if(str[k] >= 'A' && str[k] <= 'Z')
             {
                 status[31] = abeceda_velika[str[k] - 'A'][4 - j];
+                max = 4;
             } else if(str[k] >= 'a' && str[k] <= 'z')
             {
                 status[31] = abeceda_mala[str[k] - 'a'][4 - j];
+                max = 4;
             } else if(str[k] >= '0' && str[k] <= '9')
             {
                 status[31] = brojevi[str[k] - '0'][4 - j];
+                max = 4;
+            } else
+            {
+                unsigned char tmp;
+                max = 7;
+                switch(str[k])
+                {
+                    case ':':
+                        tmp = 0;
+                        break;
+                    case ';':
+                        tmp = 1;
+                        break;
+                    case '!':
+                        tmp = 2;
+                        break;
+                    case '#':
+                        tmp = 3;
+                        break;
+                    default:
+                        tmp = 0;
+                }
+                status[31] = znakovi[str[k] - '#'][7 - j];
             }
-            if(++j > 4)
+            if(++j > max)
             {
                 j = 0;
                 if(++k > strlen(str) - 1)
