@@ -99,7 +99,7 @@ int main(void)
                     default:
                         tmp = 0;
                 }
-                status[31] = znakovi[str[k] - '#'][7 - j];
+                status[31] = znakovi[tmp][7 - j];
             }
             if(++j > max)
             {
