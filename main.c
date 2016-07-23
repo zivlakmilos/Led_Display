@@ -96,6 +96,54 @@ int main(void)
                     case '#':
                         tmp = 3;
                         break;
+                    case '$':
+                        tmp = 4;
+                        break;
+                    case '^':
+                        tmp = 5;
+                        break;
+                    case '*':
+                        tmp = 6;
+                        break;
+                    case '"':
+                        tmp = 7;
+                        break;
+                    case '+':
+                        tmp = 8;
+                        break;
+                    case ';':
+                        tmp = 9;
+                        break;
+                    case '(':
+                        tmp = 10;
+                        break;
+                    case ')':
+                        tmp = 11;
+                        break;
+                    case '[':
+                        tmp = 12;
+                        break;
+                    case ']':
+                        tmp = 13;
+                        break;
+                    case '*':
+                        tmp = 14;
+                        break;
+                    case '?':
+                        tmp = 15;
+                        break;
+                    case '_':
+                        tmp = 16;
+                        break;
+                    case '/':
+                        tmp = 17;
+                        break;
+                    case '>':
+                        tmp = 18;
+                        break;
+                    case '-':
+                        tmp = 19;
+                        break;
                     default:
                         tmp = 0;
                 }
