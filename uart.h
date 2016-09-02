@@ -1,5 +1,5 @@
 /*
- * Code for bluetooth uart and rfid spi modules on avr microcontroller.
+ * Code for Led Display.
  * Copyright (C) 2016 Milos Zivlak <zivlakmilos@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
