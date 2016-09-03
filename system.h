@@ -48,29 +48,10 @@
 #define SHIFT           0x01
 #define START           0x02
 
-
 /*
- * Constants
- */
-/*
-extern const char abeceda[26][5];
-extern const char abeceda_velika[26][5];
-extern const char abeceda_mala[26][5];
-extern const char brojevi[10][5];
-extern const char znakovi[32][8];
-extern const char specijalni_znakovi[2][8];
-*/
-extern const char ascii[][8];
-
-/*
- * Registers (special variables)
+ * User defined registers
  */
 extern volatile unsigned char STATE;    // State - user defined status register
-
-/*
- * Global variables
- */
-extern char *stringToDisplay;
 
 /*
  * Functions
@@ -82,9 +63,9 @@ void shiftRow(unsigned char value);
 void shiftColumn(unsigned char value);
 void setRow(unsigned char value);
 
-int strlen(char *str);
-
+void setStringToDisplay(const char *str);
 void shiftDisplayBuffer(void);
 void refreshDisplay(void);
 
 #endif // _SYSTEM_H_
+

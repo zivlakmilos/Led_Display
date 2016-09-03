@@ -19,3 +19,4 @@ all: $(OBJS)
 
 clean:
 	rm -Rf *.hex *.elf *.o
+

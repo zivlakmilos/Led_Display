@@ -156,3 +156,4 @@ void UART_scanf(char *data, ...)
 
     va_end(args);
 }
+

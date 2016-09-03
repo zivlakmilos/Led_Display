@@ -16,7 +16,7 @@ int main(void)
 
     TIMER1_register(100, timerShift);
 
-    stringToDisplay = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789    ";
+    setStringToDisplay("ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789    ");
 
     while(1)
     {
@@ -30,3 +30,4 @@ int main(void)
 
     return 0;
 }
+

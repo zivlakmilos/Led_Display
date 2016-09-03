@@ -35,3 +35,4 @@ void UART_recive(char *data);
 void UART_scanf(char *data, ...);
 
 #endif  // _UART_H_
+

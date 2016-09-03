@@ -21,6 +21,8 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdlib.h>
+#include <string.h>
 
 /*
 const char abeceda[26][5] = {
@@ -163,7 +165,7 @@ const char specijalni_znakovi[2][8] = {
 };
 */
 
-const char ascii[][8] = { 
+const char ascii[][8] = {
     {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000},//space
     {0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000000, 0b00000100, 0b00000000},//!
     {0b00001010, 0b00001010, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000},//"
@@ -267,15 +269,10 @@ const char ascii[][8] = {
 volatile unsigned char STATE = 0x00;     // State - user defined status register
 
 /*
- * Global variables, for add it to header file
- */
-char *stringToDisplay;
-
-/*
  * Variables
  */
 char displayBuffer[32];
-char *stringToDisplay;
+char *stringToDisplay = NULL;
 unsigned char currentCharacter;
 unsigned char currentCharacterColumn;
 
@@ -343,19 +340,6 @@ void shiftColumn(unsigned char value)
     COLUMN_PORT &= ~(1 << COLUMN_STCP);
 }
 
-/*
-void setRed(unsigned char value)
-{
-    unsigned char i;
-
-    for(i = 0; i < 8; i++)
-    {
-        shiftRed(value % 2);
-        value /= 2;
-    }
-}
-*/
-
 void setRow(unsigned char value)
 {
     int i;
@@ -375,15 +359,6 @@ void setRow(unsigned char value)
     ROW_PORT &= ~(1 << ROW_STCP);
 }
 
-int strlen(char *str)
-{
-    int i;
-
-    for(i = 0; *str != '\0'; str++, i++);
-
-    return i;
-}
-
 void shiftDisplayBuffer(void)
 {
     int i, j;
@@ -394,6 +369,9 @@ void shiftDisplayBuffer(void)
     {
         displayBuffer[i] = displayBuffer[i + 1];
     }
+
+    if(!stringToDisplay)
+        return;
 
     tmpChar = stringToDisplay[currentCharacter];
 
@@ -449,3 +427,20 @@ void refreshDisplay(void)
         }
     }
 }
+
+void setStringToDisplay(const char *str)
+{
+    if(strcmp(stringToDisplay, str) != 0)
+    {
+        if(stringToDisplay)
+            free(stringToDisplay);
+        stringToDisplay = malloc(strlen(str));
+        strcpy(stringToDisplay, str);
+        currentCharacter = 0;
+        currentCharacterColumn = 0;
+        int i;
+        for(i = 0; i < 32; i++)
+            displayBuffer[i] = 0;
+    }
+}
+
