@@ -67,12 +67,13 @@ void UART_transmit(char data)
     UDR = data;
 }
 
-void UART_recive(char *data)
+char UART_recive(char *data)
 {
     if(!(UCSRB & (1 << RXCIE)))
     {
         while(!(UCSRA & (1 << RXC)));
         *data = UDR;
+        return 0;
     } else
     {
         if(STATE & DATA_RECIVED)
@@ -84,7 +85,10 @@ void UART_recive(char *data)
                 data[i] = rxDataBuffer[i];
             rxDataBufferCount = 0;
             SREG |= 0x80;
+            return 0;
         }
     }
+
+    return -1;
 }
 

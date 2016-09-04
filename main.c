@@ -22,17 +22,13 @@ int main(void)
      * String for displaying
      */
     char str[256] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz   ";
-    //setStringToDisplay("ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789    ");
     setStringToDisplay(str);
 
     while(1)
     {
-        UART_recive(str);
-        if(STATE & SHIFT)
-        {
-            STATE &= ~SHIFT;
-            shiftDisplayBuffer();
-        }
+        if(UART_recive(str) == 0)
+            initSystem();
+        shiftDisplayBuffer();
         refreshDisplay();
     }
 

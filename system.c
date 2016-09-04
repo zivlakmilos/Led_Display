@@ -333,6 +333,10 @@ void setRow(unsigned char value)
 
 void shiftDisplayBuffer(void)
 {
+    if(!(STATE & SHIFT))
+        return;
+    STATE &= ~SHIFT;
+
     int i, j;
     int charWidth = 5;  // Default width is 5
     char tmpChar;

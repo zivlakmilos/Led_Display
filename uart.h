@@ -31,7 +31,7 @@ void UART_transmit(char data);
 void UART_transmitInt(int data);
 void UART_printf(char *data, ...);
 
-void UART_recive(char *data);
+char UART_recive(char *data);
 void UART_scanf(char *data, ...);
 
 #endif  // _UART_H_
