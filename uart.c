@@ -25,88 +25,46 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-static volatile char rxData = UART_NODATA;
+volatile char rxDataBuffer[256];
+volatile unsigned char rxDataBufferCount;
 
 ISR(USART_RXC_vect)
 {
-    //while(!(UCSR0A & (1 << RXC0)));
-    rxData = UDR;
+    if(rxDataBufferCount < 255)
+        rxDataBuffer[rxDataBufferCount] = UDR;
+    else
+        rxDataBuffer[rxDataBufferCount] = '\0';
+
+    if(rxDataBuffer[rxDataBufferCount] == '\0' ||
+       rxDataBuffer[rxDataBufferCount] == '\n')
+    {
+        STATE |= DATA_RECIVED;
+        rxDataBuffer[rxDataBufferCount] == '\0';
+    }
+
+    rxDataBufferCount++;
 }
 
 void UART_init(unsigned short baud, unsigned char interrupt)
 {
     unsigned short baudRate;
     interrupt &= 0x03;
+    rxDataBufferCount = 0;
 
+    SREG &= ~0x80;
     baudRate = F_CPU / 12 / baud - 1;
     UBRRH = (unsigned char) (baudRate >> 8);
     UBRRL = (unsigned char) baudRate;
     UCSRB = (1 << RXEN) | (1 << TXEN);
     UCSRC = (1 << UCSZ1) | (1 << UCSZ0);
-    UCSRB |= (interrupt << 5);
-    SREG |= 80;
+    UCSRB |= (interrupt << 6);
+    SREG |= 0x80;
 }
 
 void UART_transmit(char data)
 {
     while(!(UCSRA & (1 << UDRE)));
     UDR = data;
-}
-
-void UART_transmitInt(int data)
-{
-    unsigned char n = 1;
-    unsigned char i;
-    char *zaSlanje;
-
-    int tmp = data;
-    while((tmp /= 10) > 0)
-        n++;
-
-    zaSlanje = (char *)malloc(n * sizeof(int));
-    //char zaSlanje[n];
-    for(i = 0; i < n; i++, data /= 10)
-        zaSlanje[n - i - 1] = data % 10 + 0x30;
-    for(i = 0; i < n; i++)
-        UART_transmit(zaSlanje[i]);
-    free(zaSlanje);
-}
-
-void UART_printf(char *data, ...)
-{
-    va_list args;
-    va_start(args, data);
-
-    do
-    {
-        if(*data == '%')
-        {
-            switch(*++data)
-            {
-                case 'd':
-                    UART_transmitInt(va_arg(args, int));
-                    break;
-                case 'c':
-                    UART_transmit((char)(va_arg(args, int)));
-                    break;
-                case 's':
-                    /*
-                     * TODO:
-                     *  uraditi UART_transmitString(char *);
-                     *  i ovde je pozvati
-                     */
-                    break;
-                default:
-                    UART_transmit((char)(*data));
-                    break;
-            }
-        } else
-        {
-            UART_transmit(*data);
-        }
-    } while(*(++data) != '\0');
-
-    va_end(args);
 }
 
 void UART_recive(char *data)
@@ -117,43 +75,16 @@ void UART_recive(char *data)
         *data = UDR;
     } else
     {
-        SREG &= ~0x80;
-        *data = rxData;
-        if(rxData != UART_NODATA)
-            rxData = UART_NODATA;
-        SREG |= 0x80;
-    }
-}
-
-void UART_scanf(char *data, ...)
-{
-    va_list args;
-    va_start(args, data);
-
-    do
-    {
-        if(*data == '%')
+        if(STATE & DATA_RECIVED)
         {
-            switch(*++data)
-            {
-                case 'c':
-                    UART_recive(va_arg(args, char *));
-                    break;
-                case 's':
-                    /*
-                     * TODO:
-                     *  Uraditi UART_reciveString(char *data);
-                     *  i onda i ovde kod koji to poziva
-                     */
-                    break;
-                default:
-                    UART_transmit(*data);
-                    break;
-            }
-        } else
-            UART_transmit(*data);
-    } while(*(++data) != '\0');
-
-    va_end(args);
+            STATE &= ~DATA_RECIVED;
+            SREG &= ~0x80;
+            int i;
+            for(i = 0; i < rxDataBufferCount; i++)
+                data[i] = rxDataBuffer[i];
+            rxDataBufferCount = 0;
+            SREG |= 0x80;
+        }
+    }
 }
 

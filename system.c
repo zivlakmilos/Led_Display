@@ -22,37 +22,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdlib.h>
-#include <string.h>
-
-/*
-const char abeceda[26][5] = {
-    {31, 36, 68, 36, 31},
-    {127, 73, 73, 73, 54},
-    {62, 65, 65, 65, 34},
-    {127, 65, 65, 34, 28},
-    {127, 73, 73, 65, 65},
-    {127, 72, 72, 72, 64},
-    {62, 65, 65, 69, 38},
-    {127, 8, 8, 8, 127},
-    {0, 65, 127, 65, 0},
-    {2, 1, 1, 1, 126},
-    {127, 8, 20, 34, 65},
-    {127, 1, 1, 1, 1},
-    {127, 32, 16, 32, 127},
-    {127, 32, 16, 8, 127},
-    {62, 65, 65, 65, 62},
-    {127, 72, 72, 72, 48},
-    {62, 65, 69, 66, 61},
-    {127, 72, 76, 74, 49},
-    {50, 73, 73, 73, 38},
-    {64, 64, 127, 64, 64},
-    {126, 1, 1, 1, 126},
-    {124, 2, 1, 2, 124},
-    {126, 1, 6, 1, 126},
-    {99, 20, 8, 20, 99},
-    {96, 16, 15, 16, 96},
-    {67, 69, 73, 81, 97},
-};
 
 const char abeceda_velika[26][5] = {
     {0b00111111,0b01001000,0b10001000,0b01001000,0b00111111},
@@ -125,6 +94,7 @@ const char brojevi[10][5] = {
     {0b01111110,0b10010001,0b10010001,0b10010001,0b01100010}
 };
 
+/*
 const char znakovi[32][8] = {
     {0b00000000,0b00000000,0b00000000,0b01000010,0b11100111,0b01000010,0b00000000,0b00000000},
     {0b00000000,0b00000000,0b00000000,0b00000000,0b11111111,0b11111111,0b00000000,0b00000000},
@@ -165,6 +135,7 @@ const char specijalni_znakovi[2][8] = {
 };
 */
 
+/*
 const char ascii[][8] = {
     {0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00000000},//space
     {0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000100, 0b00000000, 0b00000100, 0b00000000},//!
@@ -262,6 +233,7 @@ const char ascii[][8] = {
     {0b00001000, 0b00000100, 0b00000100, 0b00000010, 0b00000100, 0b00000100, 0b00001000, 0b00000000},//}
     {0b00000000, 0b00000000, 0b00001000, 0b00010101, 0b00000010, 0b00000000, 0b00000000, 0b00000000},//~
 };
+*/
 
 /*
  * Registers (special variables)
@@ -362,7 +334,7 @@ void setRow(unsigned char value)
 void shiftDisplayBuffer(void)
 {
     int i, j;
-    int charWidth;
+    int charWidth = 5;  // Default width is 5
     char tmpChar;
 
     for(i = 0; i < 31; i++)
@@ -375,20 +347,19 @@ void shiftDisplayBuffer(void)
 
     tmpChar = stringToDisplay[currentCharacter];
 
-    if((tmpChar >= 'A' &&
-        tmpChar <= 'Z') ||
-       (tmpChar >= 'a' &&
-        tmpChar <= 'z') ||
-       (tmpChar >= '0' &&
-        tmpChar <= '9'))
+    if(tmpChar >= 'A' &&
+       tmpChar <= 'Z')
     {
-        charWidth = 5;
-    } else
+        displayBuffer[i] = abeceda_velika[tmpChar - 'A'][charWidth - currentCharacterColumn - 1];
+    } else if(tmpChar >= 'a' &&
+              tmpChar <= 'z')
     {
-        charWidth = 7;
+        displayBuffer[i] = abeceda_mala[tmpChar - 'a'][charWidth - currentCharacterColumn - 1];
+    } else if(tmpChar == ' ')
+    {
+        displayBuffer[i] = 0x00;    // White space
     }
 
-    displayBuffer[i] = ascii[tmpChar - ' '][charWidth - 1 - currentCharacterColumn];
     if(++currentCharacterColumn >= charWidth)
     {
         currentCharacterColumn = 0;
@@ -428,19 +399,20 @@ void refreshDisplay(void)
     }
 }
 
-void setStringToDisplay(const char *str)
+void setStringToDisplay(char *str)
 {
-    if(strcmp(stringToDisplay, str) != 0)
-    {
-        if(stringToDisplay)
-            free(stringToDisplay);
-        stringToDisplay = malloc(strlen(str));
-        strcpy(stringToDisplay, str);
-        currentCharacter = 0;
-        currentCharacterColumn = 0;
-        int i;
-        for(i = 0; i < 32; i++)
-            displayBuffer[i] = 0;
-    }
+    stringToDisplay = str;
+    currentCharacter = 0;
+    currentCharacterColumn = 0;
+    int i;
+    for(i = 0; i < 32; i++)
+        displayBuffer[i] = 0;
+}
+
+unsigned int strlen(char *str)
+{
+    unsigned int i;
+    for(i = 0; *str != '\0'; str++, i++);
+    return i;
 }
 

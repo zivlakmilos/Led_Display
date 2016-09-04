@@ -47,6 +47,7 @@
  */
 #define SHIFT           0x01
 #define START           0x02
+#define DATA_RECIVED    0x04
 
 /*
  * User defined registers
@@ -63,7 +64,8 @@ void shiftRow(unsigned char value);
 void shiftColumn(unsigned char value);
 void setRow(unsigned char value);
 
-void setStringToDisplay(const char *str);
+unsigned int strlen(char *str);
+void setStringToDisplay(char *str);
 void shiftDisplayBuffer(void);
 void refreshDisplay(void);
 

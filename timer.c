@@ -43,10 +43,8 @@ char TIMER1_register(unsigned int interval, void (*callback)(void))
     TCCR1A = 0x00;
     TCCR1B = 0x00;
     TCCR1B = (1 << WGM12) | (1 << CS10);
-    //OCR1AH = 0x3E;
-    //OCR1AL = 0x7F;
-    OCR1AH = 0x3A;
-    OCR1AL = 0x98;
+    OCR1AH = 0x2E;      // 1 ms timer resolution
+    OCR1AL = 0xDF;
     TIMSK = (1 << OCIE1A);
     SREG |= 0x80;
 
@@ -67,7 +65,7 @@ ISR(TIMER1_COMPA_vect)
 {
     if(timer1 != NULL)
     {
-        if(++tick == intervalG)
+        if(++tick >= intervalG)
         {
             tick = 0;
             timer1();
