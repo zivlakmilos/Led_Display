@@ -21,7 +21,7 @@
 #define _UART_H_
 
 #define UART_INTERRUPT_DISABLE      0x00
-#define UART_INTERRUPT_TX           0x01
+#define UART_INTERRUPT_TX           0x01    // Not ussing for now
 #define UART_INTERRUPT_RX           0x02
 
 #define UART_NODATA                 0x00

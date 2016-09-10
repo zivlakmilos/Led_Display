@@ -282,6 +282,9 @@ void initSystem(void)
         shiftColumn(0);
         displayBuffer[i] = 0;
     }
+
+    currentCharacter = 0;
+    currentCharacterColumn = 0;
 }
 
 void shiftRow(unsigned char value)
@@ -406,11 +409,7 @@ void refreshDisplay(void)
 void setStringToDisplay(char *str)
 {
     stringToDisplay = str;
-    currentCharacter = 0;
-    currentCharacterColumn = 0;
-    int i;
-    for(i = 0; i < 32; i++)
-        displayBuffer[i] = 0;
+    initSystem();
 }
 
 unsigned int strlen(char *str)
