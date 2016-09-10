@@ -5,7 +5,8 @@ SRC = \
 	  main.c \
 	  system.c \
 	  uart.c \
-	  timer.c
+	  timer.c \
+	  eprom.c
 
 OBJS = $(SRC:.c=.o)
 
