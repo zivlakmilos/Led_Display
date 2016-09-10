@@ -52,11 +52,11 @@ void UART_init(unsigned short baud, unsigned char interrupt)
     rxDataBufferCount = 0;
 
     SREG &= ~0x80;
-    baudRate = F_CPU / 12 / baud - 1;
+    baudRate = F_CPU / 16 / baud - 1;
     UBRRH = (unsigned char) (baudRate >> 8);
     UBRRL = (unsigned char) baudRate;
     UCSRB = (1 << RXEN) | (1 << TXEN);
-    UCSRC = (1 << UCSZ1) | (1 << UCSZ0);
+    UCSRC = (1 << URSEL) | (1 << UCSZ0) | (1 << UCSZ1);
     UCSRB |= (interrupt << 6);
     SREG |= 0x80;
 }

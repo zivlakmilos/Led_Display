@@ -21,7 +21,7 @@ int main(void)
     /*
      * String for displaying
      */
-    char str[256] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz   ";
+    char str[256] = "PAJA   ";
     setStringToDisplay(str);
 
     while(1)
