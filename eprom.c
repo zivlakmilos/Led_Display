@@ -22,44 +22,35 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
-void EPROM_write(unsigned int address, char data)
-{
-    while(EECR & (1 << EEWE));
-
-    EEAR = address;
-    EEDR = data;
-
-    EECR |= (1 << EEMWE);
-    EECR |= (1 << EEWE);
-}
-
-void EPROM_read(unsigned int address, char *data)
-{
-    while(EECR & (1 << EEWE));
-
-    EEAR = address;
-    EECR = (1 << EERE);
-
-    *data = EEDR;
-}
+#include <avr/eeprom.h>
 
 void EPROM_writeString(unsigned int address, char *data)
 {
     do
     {
-        EPROM_write(address++, *data++);
-    } while(*data != '\0');
+        EPROM_write(address++, *data);
+    } while(*data++ != '\0');
 }
 
 void EPROM_readString(unsigned int address, char *data)
 {
-    char tmp;
-
     do
     {
-        EPROM_read(address++, &tmp);
-        *data++ = tmp;
-    } while(tmp != '\0');
+        *data = EPROM_read(address++);
+    } while(*data++ != '\0');
+}
+
+void EPROM_readBlock(unsigned int address, char *data, unsigned char size)
+{
+    int i;
+    for(i = 0; i < size; i++, data)
+        *data++ = EPROM_read(address++);
+}
+
+void EPROM_writeBlock(unsigned int address, char *data, unsigned char size)
+{
+    int i;
+    for(i = 0; i < size; i++)
+        EPROM_write(address++, *data++);
 }
 

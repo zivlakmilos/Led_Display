@@ -42,7 +42,7 @@ ISR(USART_RXC_vect)
         rxDataBuffer[rxDataBufferCount] == '\0';
     }
 
-    rxDataBufferCount++;
+    ++rxDataBufferCount;
 }
 
 void UART_init(unsigned short baud, unsigned char interrupt)
@@ -83,6 +83,7 @@ char UART_recive(char *data)
             int i;
             for(i = 0; i < rxDataBufferCount; i++)
                 data[i] = rxDataBuffer[i];
+            data[i] = '\0';
             rxDataBufferCount = 0;
             SREG |= 0x80;
             return 0;

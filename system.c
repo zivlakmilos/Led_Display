@@ -283,6 +283,10 @@ void initSystem(void)
         displayBuffer[i] = 0;
     }
 
+    /*
+     * Set current character to 0
+     *  Starting text from beginning
+     */
     currentCharacter = 0;
     currentCharacterColumn = 0;
 }

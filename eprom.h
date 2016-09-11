@@ -20,13 +20,20 @@
 #ifndef _EPROM_H_
 #define _EPROM_H_
 
-#define ADR_DISPLAY_STRING      0x00    // Addres of string to display
+#define ADR_STRING_SIZE         0x00    // Addres of string size
+#define ADR_DISPLAY_STRING      0x01    // Addres of string to display
 
-void EPROM_write(unsigned int address, char data);
+/*
+ * Macro for calling fucntions from eeprom.h
+ */
+#define EPROM_write(address, data)  eeprom_write_byte(address, data)
+#define EPROM_read(address)         eeprom_read_byte(address)
+
 void EPROM_writeString(unsigned int address, char *data);
+void EPROM_writeBlock(unsigned int address, char *data, unsigned char size);
 
-void EPROM_read(unsigned int address, char *data);
 void EPROM_readString(unsigned int address, char *data);
+void EPROM_readBlock(unsigned int address, char *data, unsigned char size);
 
 #endif  // _EPROM_H_
 

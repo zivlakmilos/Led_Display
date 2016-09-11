@@ -2,9 +2,11 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/eeprom.h>
 
 #include "timer.h"
 #include "uart.h"
+#include "eprom.h"
 
 void timerShift(void)
 {
@@ -23,13 +25,14 @@ int main(void)
     /*
      * String for displaying
      */
-    char str[256];
+    char str[256] = "";
     setStringToDisplay(str);
 
     /*
      * Read data from approm
      */
-    EPROM_readString(str);
+    if(EPROM_read(ADR_STRING_SIZE) > 0)
+        EPROM_readBlock(ADR_DISPLAY_STRING, str, EPROM_read(ADR_STRING_SIZE));
 
     while(1)
     {
@@ -38,7 +41,9 @@ int main(void)
             /*
              * Set data to eprom and reset system to default
              */
-            EPROM_writeString(str);
+            unsigned char length = strlen(str);
+            EPROM_write(ADR_STRING_SIZE, length);
+            EPROM_writeBlock(ADR_DISPLAY_STRING, str, length);
             initSystem();
         }
 
