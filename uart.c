@@ -39,10 +39,9 @@ ISR(USART_RXC_vect)
        rxDataBuffer[rxDataBufferCount] == '\n')
     {
         STATE |= DATA_RECIVED;
-        rxDataBuffer[rxDataBufferCount] == '\0';
     }
 
-    ++rxDataBufferCount;
+    rxDataBufferCount++;
 }
 
 void UART_init(unsigned short baud, unsigned char interrupt)
@@ -81,7 +80,7 @@ char UART_recive(char *data)
             STATE &= ~DATA_RECIVED;
             SREG &= ~0x80;
             int i;
-            for(i = 0; i < rxDataBufferCount; i++)
+            for(i = 0; i < rxDataBufferCount - 1; i++)
                 data[i] = rxDataBuffer[i];
             data[i] = '\0';
             rxDataBufferCount = 0;
